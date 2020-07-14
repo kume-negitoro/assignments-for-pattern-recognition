@@ -1,37 +1,35 @@
 import { writeFileSync } from 'fs'
 import { createCanvas, loadImage } from 'canvas'
-import { Complex, dft, idft, dft2, idft2 } from './Complex'
+import { Complex, dft2, idft2, lowpass } from './Complex'
 import {
     getLuminanceArrayFromGrayImage,
     getImageDataFromLuminanceArray,
 } from './utils'
 
+const LOWPASS_RATE = 0.8
+const destPath = './out/proceed.png'
 const imagePath = [
     './samples/sample1.png',
     './samples/sample2.png',
     './samples/sample3.png',
     './samples/mypicture.jpg',
 ][0]
-const destPath = './proceed.png'
-
-// console.log(
-//     [1, 2, 3, 4, 5]
-//         .map(Complex.of)
-//         .map((n, k, a) => dft(k, a))
-//         .map((n, k, a) => idft(k, a))
-// )
 
 void (async () => {
+    // 画像を読み込む
     const image = await loadImage(imagePath)
     const { width, height } = image
     const canvas = createCanvas(width, height)
     const ctx = canvas.getContext('2d')
 
+    // 画像データを取得する
     ctx.drawImage(image, 0, 0)
     const imagedata = ctx.getImageData(0, 0, width, height)
 
+    // 画像データから輝度値の配列を取得する
     const luminanceArray = getLuminanceArrayFromGrayImage(imagedata)
 
+    // bitmap[width][height] に複素数として輝度値を格納する
     const bitmap: Complex[][] = Array.from(Array(width), () => [])
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
@@ -39,24 +37,31 @@ void (async () => {
         }
     }
 
-    const coeff = dft2(bitmap)
+    // 輝度値に2次元DFTを適用してスペクトルを求める
+    const coeff = dft2(bitmap, width, height)
 
-    const newBitmap = idft2(coeff)
+    // スペクトルにローパスフィルタを適用する
+    lowpass(coeff, width, height, LOWPASS_RATE)
 
+    // スペクトルに2次元IDFTを適用して輝度値を求める
+    const newBitmap = idft2(coeff, width, height)
+
+    // 得られた複素数の実数部分を整数として新しい輝度値の配列を作る
     const newLuminanceArray: number[] = []
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
-            // console.log(newBitmap[x][y].re)
             newLuminanceArray[x + width * y] = newBitmap[x][y].re | 0
         }
     }
 
+    // 得られた輝度値を画像データに変換する
     const newImageData = getImageDataFromLuminanceArray(
         newLuminanceArray,
         width,
         height
     )
 
+    // 画像データを書き出す
     ctx.putImageData(newImageData, 0, 0)
     const base64 = canvas.toDataURL().split(',')[1]
     const buffer = Buffer.from(base64, 'base64')
