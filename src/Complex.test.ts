@@ -1,4 +1,4 @@
-import { Complex, exp, dft, idft, dft2, idft2 } from './Complex'
+import { Complex, dft, idft, dft2, idft2 } from './Complex'
 
 describe('dft-idft', () => {
     test('input and idft(dft(input)) should be same', () => {
@@ -26,14 +26,6 @@ describe('dft2-idft2', () => {
         ).map((row) => row.map((c) => Math.round(c.re)))
 
         expect(signal2).toEqual(signal1)
-    })
-})
-
-describe('exp', () => {
-    test('exp', () => {
-        expect(exp(Math.PI)).toEqual(
-            Complex.of(Math.cos(Math.PI), Math.sin(Math.PI))
-        )
     })
 })
 

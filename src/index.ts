@@ -6,14 +6,9 @@ import {
     getImageDataFromLuminanceArray,
 } from './utils'
 
-const LOWPASS_RATE = 0.8
+const lowpassRate = 0.5
 const destPath = './out/proceed.png'
-const imagePath = [
-    './samples/sample1.png',
-    './samples/sample2.png',
-    './samples/sample3.png',
-    './samples/mypicture.jpg',
-][0]
+const imagePath = './samples/mypicture.jpg'
 
 void (async () => {
     // 画像を読み込む
@@ -41,7 +36,7 @@ void (async () => {
     const coeff = dft2(bitmap, width, height)
 
     // スペクトルにローパスフィルタを適用する
-    lowpass(coeff, width, height, LOWPASS_RATE)
+    lowpass(coeff, width, height, lowpassRate)
 
     // スペクトルに2次元IDFTを適用して輝度値を求める
     const newBitmap = idft2(coeff, width, height)

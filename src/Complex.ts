@@ -1,3 +1,6 @@
+/**
+ * 複素数クラス
+ */
 export class Complex {
     constructor(public re: number = 0, public im: number = 0) {}
 
@@ -60,24 +63,6 @@ export class Complex {
         )
     }
 }
-
-export const add = (left: Complex, right: Complex): Complex =>
-    Complex.of(left.re + right.re, left.im + right.im)
-
-export const mul = (left: Complex, right: Complex): Complex =>
-    Complex.of(
-        left.re * right.re - left.im * right.im,
-        left.re * right.im + left.im * right.re
-    )
-
-export const mulNumber = (left: Complex, right: number): Complex =>
-    Complex.of(left.re * right, left.im * right)
-
-export const exp = (theta: number): Complex =>
-    Complex.of(
-        Math.cos(Math.abs(theta)),
-        Math.sign(theta) * Math.sin(Math.abs(theta))
-    )
 
 /**
  * 1次元DFTを行う関数
