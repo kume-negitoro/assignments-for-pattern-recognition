@@ -14,8 +14,7 @@
     }
   },
   "dependencies": {
-    "canvas": "^2.6.1",
-    "nodeplotlib": "^0.6.5"
+    "canvas": "^2.6.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.4",
