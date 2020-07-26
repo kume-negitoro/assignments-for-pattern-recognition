@@ -1,4 +1,9 @@
 {
+  "name": "assignments-for-pattern-recognition",
+  "version": "0.0.1",
+  "auther": "kume-negitoro",
+  "description": "Assignments for the subject \"Pattern Recognition\".",
+  "private": true,
   "scripts": {
     "test": "jest",
     "start": "ts-node src/index.ts"
